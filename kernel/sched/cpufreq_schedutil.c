@@ -64,8 +64,6 @@ static DEFINE_PER_CPU(struct sugov_cpu, sugov_cpu);
 
 static bool sugov_should_update_freq(struct sugov_policy *sg_policy, u64 time)
 {
-	s64 delta_ns;
-
 	/*
 	 * Since cpufreq_update_util() is called with rq->lock held for
 	 * the @target_cpu, our per-CPU data is fully serialized.
@@ -90,9 +88,7 @@ static bool sugov_should_update_freq(struct sugov_policy *sg_policy, u64 time)
 		return true;
 	}
 
-	delta_ns = time - sg_policy->last_freq_update_time;
-
-	return delta_ns >= sg_policy->freq_update_delay_ns;
+	return (time - sg_policy->last_freq_update_time) >= sg_policy->freq_update_delay_ns;
 }
 
 static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
