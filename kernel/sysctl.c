@@ -101,8 +101,16 @@ static const int six_hundred_forty_kb = 640 * 1024;
 static const int ngroups_max = NGROUPS_MAX;
 static const int cap_last_cap = CAP_LAST_CAP;
 
-#ifdef CONFIG_PROC_SYSCTL
+#ifdef CONFIG_SCHED_BORE
+extern unsigned int sched_bore;
+extern unsigned int sched_burst_penalty_scale;
+extern unsigned int sched_burst_granularity;
+extern unsigned int sched_burst_reduction;
+static int sixty_four     = 64;
+static int maxval_12_bits = 4095;
+#endif // CONFIG_SCHED_BORE
 
+#ifdef CONFIG_PROC_SYSCTL
 /**
  * enum sysctl_writes_mode - supported sysctl write modes
  *
@@ -2062,6 +2070,44 @@ static struct ctl_table kern_table[] = {
 		.extra2		= SYSCTL_ONE_THOUSAND,
 	},
 #endif
+#ifdef CONFIG_SCHED_BORE
+	{
+		.procname	= "sched_bore",
+		.data		= &sched_bore,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= &proc_dointvec_minmax,
+		.extra1		= SYSCTL_ZERO,
+		.extra2		= SYSCTL_ONE,
+	},
+	{
+		.procname	= "sched_burst_penalty_scale",
+		.data		= &sched_burst_penalty_scale,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= &proc_dointvec_minmax,
+		.extra1		= SYSCTL_ZERO,
+		.extra2		= &maxval_12_bits,
+	},
+	{
+		.procname	= "sched_burst_granularity",
+		.data		= &sched_burst_granularity,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= &proc_dointvec_minmax,
+		.extra1		= SYSCTL_ZERO,
+		.extra2		= &sixty_four,
+	},
+	{
+		.procname	= "sched_burst_reduction",
+		.data		= &sched_burst_reduction,
+		.maxlen		= sizeof(unsigned int),
+		.mode		= 0644,
+		.proc_handler	= &proc_dointvec_minmax,
+		.extra1		= SYSCTL_ONE,
+		.extra2		= &sixty_four,
+	},
+#endif // CONFIG_SCHED_BORE
 	{
 		.procname	= "panic_on_warn",
 		.data		= &panic_on_warn,
