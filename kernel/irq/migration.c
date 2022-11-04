@@ -83,7 +83,7 @@ void irq_move_masked_irq(struct irq_data *idata)
 		 * vector management, reschedule the move for the next
 		 * interrupt. Leave desc->pending_mask intact.
 		 */
-		if (ret == -EBUSY) {
+		if (unlikely(ret == -EBUSY)) {
 			irqd_set_move_pending(data);
 			return;
 		}
