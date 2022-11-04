@@ -266,9 +266,11 @@ int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask,
 	cpumask_and(&tmp_mask, prog_mask, cpu_online_mask);
 	if (!force && !cpumask_empty(&tmp_mask))
 		ret = chip->irq_set_affinity(data, &tmp_mask, force);
-	else if (force)
+	else if (force) {
+		/* IRQs only run on the first CPU in the affinity mask; reflect that */
+		mask = cpumask_of(cpumask_first(mask));
 		ret = chip->irq_set_affinity(data, mask, force);
-	else
+	} else
 		ret = -EINVAL;
 
 	raw_spin_unlock(&tmp_mask_lock);
