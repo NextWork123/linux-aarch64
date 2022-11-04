@@ -298,8 +298,6 @@ static bool sugov_cpu_is_busy(struct sugov_cpu *sg_cpu)
 	sg_cpu->saved_idle_calls = idle_calls;
 	return ret;
 }
-#else
-static inline bool sugov_cpu_is_busy(struct sugov_cpu *sg_cpu) { return false; }
 #endif /* CONFIG_NO_HZ_COMMON */
 
 /*
@@ -347,6 +345,7 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
 	 *
 	 * Except when the rq is capped by uclamp_max.
 	 */
+#ifdef CONFIG_NO_HZ_COMMON
 	if (!uclamp_rq_is_capped(cpu_rq(sg_cpu->cpu)) &&
 	    sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
 		next_f = sg_policy->next_freq;
@@ -354,6 +353,7 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
 		/* Restore cached freq as next_freq has changed */
 		sg_policy->cached_raw_freq = cached_freq;
 	}
+#endif
 
 	if (!sugov_update_next_freq(sg_policy, time, next_f))
 		return;
@@ -398,9 +398,11 @@ static void sugov_update_single_perf(struct update_util_data *hook, u64 time,
 	 *
 	 * Except when the rq is capped by uclamp_max.
 	 */
+#ifdef CONFIG_NO_HZ_COMMON
 	if (!uclamp_rq_is_capped(cpu_rq(sg_cpu->cpu)) &&
 	    sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
 		sg_cpu->util = prev_util;
+#endif
 
 	cpufreq_driver_adjust_perf(sg_cpu->cpu, map_util_perf(sg_cpu->bw_dl),
 				   map_util_perf(sg_cpu->util),
