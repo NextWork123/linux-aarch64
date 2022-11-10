@@ -295,13 +295,13 @@ void amdgpu_sdma_unset_buffer_funcs_helper(struct amdgpu_device *adev)
 		if (adev->sdma.has_page_queue) {
 			sdma = &adev->sdma.instance[i].page;
 			if (adev->mman.buffer_funcs_ring == sdma) {
-				amdgpu_ttm_set_buffer_funcs_status(adev, false);
+				amdgpu_ttm_set_buffer_funcs_status_false(adev);
 				break;
 			}
 		}
 		sdma = &adev->sdma.instance[i].ring;
 		if (adev->mman.buffer_funcs_ring == sdma) {
-			amdgpu_ttm_set_buffer_funcs_status(adev, false);
+			amdgpu_ttm_set_buffer_funcs_status_false(adev);
 			break;
 		}
 	}

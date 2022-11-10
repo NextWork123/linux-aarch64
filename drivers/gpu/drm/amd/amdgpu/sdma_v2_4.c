@@ -484,7 +484,7 @@ static int sdma_v2_4_gfx_resume(struct amdgpu_device *adev)
 			return r;
 
 		if (adev->mman.buffer_funcs_ring == ring)
-			amdgpu_ttm_set_buffer_funcs_status(adev, true);
+			amdgpu_ttm_set_buffer_funcs_status_true(adev);
 	}
 
 	return 0;

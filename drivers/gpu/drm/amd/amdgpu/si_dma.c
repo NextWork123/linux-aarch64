@@ -183,7 +183,7 @@ static int si_dma_start(struct amdgpu_device *adev)
 			return r;
 
 		if (adev->mman.buffer_funcs_ring == ring)
-			amdgpu_ttm_set_buffer_funcs_status(adev, true);
+			amdgpu_ttm_set_buffer_funcs_status_true(adev);
 	}
 
 	return 0;

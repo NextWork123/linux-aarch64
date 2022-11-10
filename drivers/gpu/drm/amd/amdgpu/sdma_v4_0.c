@@ -1448,11 +1448,11 @@ static int sdma_v4_0_start(struct amdgpu_device *adev)
 				return r;
 
 			if (adev->mman.buffer_funcs_ring == page)
-				amdgpu_ttm_set_buffer_funcs_status(adev, true);
+				amdgpu_ttm_set_buffer_funcs_status_true(adev);
 		}
 
 		if (adev->mman.buffer_funcs_ring == ring)
-			amdgpu_ttm_set_buffer_funcs_status(adev, true);
+			amdgpu_ttm_set_buffer_funcs_status_true(adev);
 	}
 
 	return r;
