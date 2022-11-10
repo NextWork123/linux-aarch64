@@ -125,8 +125,8 @@ int amdgpu_vram_mgr_query_page_status(struct amdgpu_vram_mgr *mgr,
 
 int amdgpu_ttm_init(struct amdgpu_device *adev);
 void amdgpu_ttm_fini(struct amdgpu_device *adev);
-void amdgpu_ttm_set_buffer_funcs_status(struct amdgpu_device *adev,
-					bool enable);
+void amdgpu_ttm_set_buffer_funcs_status_true(struct amdgpu_device *adev);
+void amdgpu_ttm_set_buffer_funcs_status_false(struct amdgpu_device *adev);
 
 int amdgpu_copy_buffer(struct amdgpu_ring *ring, uint64_t src_offset,
 		       uint64_t dst_offset, uint32_t byte_count,

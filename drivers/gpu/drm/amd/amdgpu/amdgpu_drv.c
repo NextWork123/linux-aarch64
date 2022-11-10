@@ -2334,7 +2334,7 @@ static void amdgpu_drv_delayed_reset_work_handler(struct work_struct *work)
 		adev = mgpu_info.gpu_ins[i].adev;
 		if (!adev->kfd.init_complete)
 			amdgpu_amdkfd_device_init(adev);
-		amdgpu_ttm_set_buffer_funcs_status(adev, true);
+		amdgpu_ttm_set_buffer_funcs_status_false(adev);
 	}
 	return;
 }

@@ -1731,7 +1731,7 @@ int amdgpu_ttm_init(struct amdgpu_device *adev)
 		adev->gmc.visible_vram_size = vis_vram_limit;
 
 	/* Change the size here instead of the init above so only lpfn is affected */
-	amdgpu_ttm_set_buffer_funcs_status(adev, false);
+	amdgpu_ttm_set_buffer_funcs_status_false(adev);
 #ifdef CONFIG_64BIT
 #ifdef CONFIG_X86
 	if (adev->gmc.xgmi.connected_to_cpu)
@@ -1900,51 +1900,68 @@ void amdgpu_ttm_fini(struct amdgpu_device *adev)
 }
 
 /**
- * amdgpu_ttm_set_buffer_funcs_status - enable/disable use of buffer functions
+ * amdgpu_ttm_set_buffer_funcs_status_true - enable use of buffer functions
  *
  * @adev: amdgpu_device pointer
- * @enable: true when we can use buffer functions.
- *
- * Enable/disable use of buffer functions during suspend/resume. This should
+ * 
+ * Enable use of buffer functions during suspend/resume. This should
  * only be called at bootup or when userspace isn't running.
  */
-void amdgpu_ttm_set_buffer_funcs_status(struct amdgpu_device *adev, bool enable)
+void amdgpu_ttm_set_buffer_funcs_status_true(struct amdgpu_device *adev)
+{
+	struct ttm_resource_manager *man = ttm_manager_type(&adev->mman.bdev, TTM_PL_VRAM);
+	struct amdgpu_ring *ring;
+	struct drm_gpu_scheduler *sched;
+	uint64_t size;
+	int r;
+
+	if (!adev->mman.initialized || amdgpu_in_reset(adev) ||
+	    adev->mman.buffer_funcs_enabled == true)
+		return;
+
+	ring = adev->mman.buffer_funcs_ring;
+	sched = &ring->sched;
+	r = drm_sched_entity_init(&adev->mman.entity,
+				  DRM_SCHED_PRIORITY_KERNEL, &sched,
+				  1, NULL);
+	if (r) {
+		DRM_ERROR("Failed setting up TTM BO move entity (%d)\n",
+			  r);
+		return;
+	}
+
+	/* this just adjusts TTM size idea, which sets lpfn to the correct value */
+	size = adev->gmc.real_vram_size;
+	man->size = size;
+	adev->mman.buffer_funcs_enabled = true;
+}
+
+/**
+ * amdgpu_ttm_set_buffer_funcs_status_false - disable use of buffer functions
+ *
+ * @adev: amdgpu_device pointer
+ * 
+ * Disable use of buffer functions during suspend/resume. This should
+ * only be called at bootup or when userspace isn't running.
+ */
+void amdgpu_ttm_set_buffer_funcs_status_false(struct amdgpu_device *adev)
 {
 	struct ttm_resource_manager *man = ttm_manager_type(&adev->mman.bdev, TTM_PL_VRAM);
 	uint64_t size;
 	int r;
 
 	if (!adev->mman.initialized || amdgpu_in_reset(adev) ||
-	    adev->mman.buffer_funcs_enabled == enable)
+	    adev->mman.buffer_funcs_enabled == false)
 		return;
 
-	if (enable) {
-		struct amdgpu_ring *ring;
-		struct drm_gpu_scheduler *sched;
-
-		ring = adev->mman.buffer_funcs_ring;
-		sched = &ring->sched;
-		r = drm_sched_entity_init(&adev->mman.entity,
-					  DRM_SCHED_PRIORITY_KERNEL, &sched,
-					  1, NULL);
-		if (r) {
-			DRM_ERROR("Failed setting up TTM BO move entity (%d)\n",
-				  r);
-			return;
-		}
-	} else {
-		drm_sched_entity_destroy(&adev->mman.entity);
-		dma_fence_put(man->move);
-		man->move = NULL;
-	}
+	drm_sched_entity_destroy(&adev->mman.entity);
+	dma_fence_put(man->move);
+	man->move = NULL;
 
 	/* this just adjusts TTM size idea, which sets lpfn to the correct value */
-	if (enable)
-		size = adev->gmc.real_vram_size;
-	else
-		size = adev->gmc.visible_vram_size;
+	size = adev->gmc.visible_vram_size;
 	man->size = size;
-	adev->mman.buffer_funcs_enabled = enable;
+	adev->mman.buffer_funcs_enabled = false;
 }
 
 static int amdgpu_ttm_prepare_job(struct amdgpu_device *adev,
