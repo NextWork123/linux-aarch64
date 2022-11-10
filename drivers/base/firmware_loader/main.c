@@ -862,7 +862,7 @@ _request_firmware(const struct firmware **firmware_p, const char *name,
 	put_cred(kern_cred);
 
  out:
-	if (ret < 0) {
+	if (!ret) {
 		fw_abort_batch_reqs(fw);
 		release_firmware(fw);
 		fw = NULL;
