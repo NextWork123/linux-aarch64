@@ -1976,7 +1976,7 @@ static int sdma_v4_0_resume(void *handle)
 	if (adev->in_s0ix) {
 		sdma_v4_0_enable(adev, true);
 		sdma_v4_0_gfx_enable(adev, true);
-		amdgpu_ttm_set_buffer_funcs_status(adev, true);
+		amdgpu_ttm_set_buffer_funcs_status_true(adev);
 		return 0;
 	}
 
