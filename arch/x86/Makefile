@@ -151,6 +151,10 @@ else
         # FIXME - should be integrated in Makefile.cpu (Makefile_32.cpu)
         cflags-$(CONFIG_MK8)		+= -march=k8
         cflags-$(CONFIG_MPSC)		+= -march=nocona
+        cflags-$(CONFIG_MZEN) 		+= -march=znver1
+        cflags-$(CONFIG_MZEN2) 		+= -march=znver2
+        cflags-$(CONFIG_MZEN3) 		+= -march=znver3
+        cflags-$(CONFIG_MNATIVE_AMD) 	+= -march=native
         cflags-$(CONFIG_MCORE2)		+= -march=core2
         cflags-$(CONFIG_MATOM)		+= -march=atom
         cflags-$(CONFIG_GENERIC_CPU)	+= -mtune=generic
