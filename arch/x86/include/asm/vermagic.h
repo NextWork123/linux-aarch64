@@ -17,6 +17,8 @@
 #define MODULE_PROC_FAMILY "586MMX "
 #elif defined CONFIG_MCORE2
 #define MODULE_PROC_FAMILY "CORE2 "
+#elif defined CONFIG_MNATIVE_AMD
+#define MODULE_PROC_FAMILY "NATIVE_AMD "
 #elif defined CONFIG_MATOM
 #define MODULE_PROC_FAMILY "ATOM "
 #elif defined CONFIG_M686
@@ -35,6 +37,12 @@
 #define MODULE_PROC_FAMILY "K7 "
 #elif defined CONFIG_MK8
 #define MODULE_PROC_FAMILY "K8 "
+#elif defined CONFIG_MZEN
+#define MODULE_PROC_FAMILY "ZEN "
+#elif defined CONFIG_MZEN2
+#define MODULE_PROC_FAMILY "ZEN2 "
+#elif defined CONFIG_MZEN3
+#define MODULE_PROC_FAMILY "ZEN3 "
 #elif defined CONFIG_MELAN
 #define MODULE_PROC_FAMILY "ELAN "
 #elif defined CONFIG_MCRUSOE
