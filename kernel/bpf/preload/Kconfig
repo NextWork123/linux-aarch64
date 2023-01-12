@@ -9,7 +9,7 @@ menuconfig BPF_PRELOAD
 	depends on BPF_SYSCALL
 	# The dependency on !COMPILE_TEST prevents it from being enabled
 	# in allmodconfig or allyesconfig configurations
-	depends on !COMPILE_TEST
+	depends on !COMPILE_TEST || SND_DMAENGINE_PCM
 	select USERMODE_DRIVER
 	help
 	  This builds kernel module with several embedded BPF programs that are
