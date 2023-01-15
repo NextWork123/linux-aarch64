@@ -717,7 +717,7 @@ config LTO_NONE
 config LTO_CLANG_FULL
 	bool "Clang Full LTO (EXPERIMENTAL)"
 	depends on HAS_LTO_CLANG
-	depends on !COMPILE_TEST
+	depends on !COMPILE_TEST || SND_DMAENGINE_PCM
 	select LTO_CLANG
 	help
           This option enables Clang's full Link Time Optimization (LTO), which
