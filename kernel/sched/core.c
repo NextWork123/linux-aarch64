@@ -4414,7 +4414,7 @@ int wake_up_state(struct task_struct *p, unsigned int state)
 static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
 {
 	struct task_struct *sib;
-	u64 cnt, sum, avg;
+	u64 cnt = 0, sum = 0, avg = 0;
 	list_for_each_entry(sib, &p->sibling, sibling) {
 		cnt++;
 		sum += sib->se.burst_time;
